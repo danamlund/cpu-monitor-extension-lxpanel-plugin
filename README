@@ -1,0 +1,67 @@
+PACKAGE INFORMATION
+===================
+
+An extension of the builtin CPU Usage Monitor plugin in lxpanel
+
+
+DEPENDENCIES
+============
+
+This package uses several other packages with different names
+depending on distribution.
+
+For Ubuntu 11.04:
+  lxpanel
+  pkg-config
+  libglib2.0-dev
+  libgtk2.0-dev
+  libmenu-cache1-dev
+
+For Debian systems the additional package is needed:
+  lxpanel-dev
+
+For Fedora 16:
+  lxpanel-devel
+  gtk2-devel
+
+
+INSTALLATION
+============
+
+To install this package run on a fresh ubuntu 11.04 system:
+  sudo apt-get install build-essential lxde
+  sudo apt-get install libglib2.0-dev libgtk2.0-dev libmenu-cache1-dev 
+  make
+  sudo make install
+
+On debian (and possible other systems) the package 'lxpanel-dev' is
+also needed: 
+  sudo apt-get install lxpanel-dev
+
+USAGE
+=====
+
+Once installed, follow these steps to add the plugin:
+  Right-click panel
+  Select "Add / Remove Panel Items"
+  Press "Add"
+  Select and add "CPU Usage Monitor (da)"
+  Right-click plugin to change settings
+
+To monitor multiple things, add multiple monior plugins.
+
+
+AUTHOR INFORMATION
+==================
+
+Author: Dan Amlund Thomsen
+Email: dan@danamlund.dk
+Website: http://danamlund.dk/sensors_lxpanel_plugin
+
+
+CHANGELOG
+=========
+
+1.2 (2013-07-11) 
+  Took the cpu monitor plugin from lxpanel. Added
+  settings to monitor single cores, memory usage and swap usage.
