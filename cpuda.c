@@ -22,6 +22,7 @@
 /*A little bug fixed by Mykola <mykola@2ka.mipt.ru>:) */
 /* v. 1.2: Added settings to control which CPU to show statistics
    for and memory usage or swap usage. by dan@danamlund.dk */
+/* v. 1.3: Added setting to control the width of the widget. */
 
 /* 
 sudo apt-get install build-essential lxde
@@ -74,6 +75,7 @@ typedef struct {
     int pixmap_height;				/* Height of drawing area pixmap; does not include border size */
     struct cpu_stat previous_cpu_stat;		/* Previous value of cpu_stat */
     int cpu_num;
+    int widget_width;
     GtkWidget * config_dlg;
     GList *cpu_names;
   int cpu_amount;
@@ -355,6 +357,7 @@ static int cpu_constructor(Plugin * p, char ** fp)
     CPUPlugin * c = g_new0(CPUPlugin, 1);
     p->priv = c;
     c->cpu_num = 0;
+    c->widget_width = 40;
     c->action = g_strdup("lxtask");
 
     c->p = p;
@@ -380,6 +383,8 @@ static int cpu_constructor(Plugin * p, char ** fp)
           else if (g_ascii_strcasecmp(s.t[0], "Action") == 0) {
             g_free(c->action);
             c->action = g_strdup(s.t[1]);
+          } else if (g_ascii_strcasecmp(s.t[0], "WidgetWidth") == 0) {
+            c->widget_width = atoi(s.t[1]);
           } else
             ERR( "cpu: unknown var %s\n", s.t[0]);
         } 
@@ -402,7 +407,7 @@ static int cpu_constructor(Plugin * p, char ** fp)
     /* Allocate drawing area as a child of top level widget.  Enable
        button press events. */
     c->da = gtk_drawing_area_new();
-    gtk_widget_set_size_request(c->da, 40, PANEL_HEIGHT_DEFAULT);
+    gtk_widget_set_size_request(c->da, c->widget_width, PANEL_HEIGHT_DEFAULT);
     gtk_widget_add_events(c->da, GDK_BUTTON_PRESS_MASK);
     gtk_container_add(GTK_CONTAINER(p->pwid), c->da);
 
@@ -448,6 +453,11 @@ static void cpu_apply_configuration(Plugin * p)
 {
   CPUPlugin * c = (CPUPlugin *) p->priv;
 
+  if (c->widget_width < 5)
+    c->widget_width = 5;
+
+  gtk_widget_set_size_request(c->da, c->widget_width, PANEL_HEIGHT_DEFAULT);
+
   if (c->stats_cpu != NULL) 
   {
     int i;
@@ -482,6 +492,7 @@ static void cpu_configure(Plugin * p, GtkWindow * parent)
        (GSourceFunc) cpu_apply_configuration, (gpointer) p,
        _("Action on click"), &c->action, CONF_TYPE_STR,
        _("Color"), &c->foreground_color_string, CONF_TYPE_STR,
+       _("Width"), &c->widget_width, CONF_TYPE_INT,
        NULL);
 
 
@@ -535,6 +546,7 @@ static void cpu_save_configuration(Plugin * p, FILE * fp)
     lxpanel_put_int(fp, "CPUNum", c->cpu_num);
     lxpanel_put_str(fp, "Action", c->action);
     lxpanel_put_str(fp, "Color", c->foreground_color_string);
+    lxpanel_put_int(fp, "WidgetWidth", c->widget_width);
 }
 
 /* Callback when panel configuration changes. */

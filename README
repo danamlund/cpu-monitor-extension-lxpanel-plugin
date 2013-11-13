@@ -1,7 +1,12 @@
 PACKAGE INFORMATION
 ===================
 
-An extension of the builtin CPU Usage Monitor plugin in lxpanel
+An extension of the builtin CPU Usage Monitor plugin in lxpanel.
+
+This adds the ability to monitor:
+ 1. Individual CPU cores
+ 2. Memory usage
+ 3. Swap usage
 
 
 DEPENDENCIES
@@ -61,6 +66,9 @@ Website: http://danamlund.dk/sensors_lxpanel_plugin
 
 CHANGELOG
 =========
+
+1.3 (2013-11-13) 
+  Added setting to control the width of the widget.
 
 1.2 (2013-07-11) 
   Took the cpu monitor plugin from lxpanel. Added
