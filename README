@@ -43,6 +43,11 @@ On debian (and possible other systems) the package 'lxpanel-dev' is
 also needed: 
   sudo apt-get install lxpanel-dev
 
+To install in Arch Linux
+  Available PKGBUILD in the AUR:
+    https://aur.archlinux.org/packages/cpu-monitor-extension-lxpanel-plugin
+
+
 USAGE
 =====
 
