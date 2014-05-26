@@ -21,9 +21,11 @@
  */
 /*A little bug fixed by Mykola <mykola@2ka.mipt.ru>:) */
 /* v. 1.2: Added settings to control which CPU to show statistics
+
    for and memory usage or swap usage. by dan@danamlund.dk */
 /* v. 1.3: Added setting to control the width of the widget. */
 
+/* v. 1.4: added better makefile. */
 /* 
 sudo apt-get install build-essential lxde
 sudo apt-get install libglib2.0-dev libmenu-cache1-dev libgtk2.0-dev
@@ -36,7 +38,7 @@ sudo apt-get install libglib2.0-dev libmenu-cache1-dev libgtk2.0-dev
 #include <stdlib.h>
 #include <glib/gi18n.h>
 
-#include <lxpanel/plugin.h>
+#include "lxpanel/plugin.h"
 
 /* from lxpanel-0.5.8/src/configurator.h */
 GtkWidget* create_generic_config_dlg( const char* title, GtkWidget* parent,

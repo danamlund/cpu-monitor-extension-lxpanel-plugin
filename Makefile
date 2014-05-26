@@ -1,43 +1,28 @@
-VERSION=1.2
+VERSION=1.4
+NAME=cpu-monitor-extension-lxpanel-plugin
+INPUT=cpuda.c
+OUTPUT=cpuda.so
 
-FILE="cpuda.so"
-DIR="cpu-monitor-extension-lxpanel-plugin"
+all: ${OUTPUT}
 
-all: $(FILE)
-
-$(FILE): cpuda.c
-	gcc -O2 -Wall `pkg-config --cflags lxpanel gtk+-2.0` \
-	-shared -fPIC cpuda.c -o $(FILE) \
-	`pkg-config --libs lxpanel gtk+-2.0`
+${OUTPUT}: ${INPUT}
+	./check_required.sh
+	gcc -O2 -Wall `pkg-config --cflags glib-2.0 gtk+-2.0` \
+	    -shared -fPIC ${INPUT} -o ${OUTPUT} \
+	    `pkg-config --libs glib-2.0 gtk+-2.0`
 
 clean:
-	rm -f $(FILE)
+	rm -f ${OUTPUT}
 
-install: 
-	@ if [ "$(DESTDIR)" ]; then \
-	  cp -v $(FILE) $(DESTDIR); \
-	elif [ -d "/usr/lib/lxpanel/plugins" ]; then \
-	  cp -v $(FILE) /usr/lib/lxpanel/plugins; \
-	elif [ -d "/usr/lib64/lxpanel/plugins" ]; then \
-	  cp -v $(FILE) /usr/lib64/lxpanel/plugins; \
-	elif [ -d "/usr/lib/i386-linux-gnu/lxpanel/plugins" ]; then \
-	  cp -v $(FILE) /usr/lib/i386-linux-gnu/lxpanel/plugins; \
-	elif [ -d "/usr/lib64/i386-linux-gnu/lxpanel/plugins" ]; then \
-	  cp -v $(FILE) /usr/lib64/i386-linux-gnu/lxpanel/plugins; \
-	else \
-	  echo ;\
-	  echo Couldn\'t find lxpanel/plugins directory.; \
-	  echo Checked /usr/lib/lxpanel/plugins and /usr/lib64/lxpanel/plugins; \
-	  echo and /usr/lib/i386-linux-gnu/lxpanel/plugins; \
-	  echo and /usr/lib64/i386-linux-gnu/lxpanel/plugins.; \
-	  echo Find it yourself by running \'locate deskno.so\'; \
-	  echo Then copy $(FILE) to that directory.; \
-	fi
+install: ${OUTPUT}
+	./install.sh
 
 package:
-	rm -Rf $(DIR)-${VERSION}
-	mkdir $(DIR)-${VERSION}
-	cp README Makefile cpuda.c COPYING AUTHORS $(DIR)-${VERSION}
-	tar czvf $(DIR)-${VERSION}.tar.gz \
-		 $(DIR)-${VERSION}
-	rm -Rf $(DIR)-${VERSION}
+	rm -Rf ${NAME}-${VERSION}
+	mkdir ${NAME}-${VERSION}
+	cp -Rf README Makefile ${INPUT} COPYING AUTHORS \
+	       check_required.sh install.sh lxpanel \
+               ${NAME}-${VERSION}
+	tar czvf ${NAME}-${VERSION}.tar.gz \
+		 ${NAME}-${VERSION}
+	rm -Rf ${NAME}-${VERSION}
