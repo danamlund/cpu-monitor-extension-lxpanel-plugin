@@ -65,7 +65,9 @@ struct cpu_stat {
 /* Private context for CPU plugin. */
 typedef struct {
     GdkGC * graphics_context;			/* Graphics context for drawing area */
+    GdkGC * background_gc;			/* Graphics context for background */
     GdkColor foreground_color;			/* Foreground color for drawing area */
+    GdkColor background_color;			/* Foreground color for background */
     GtkWidget * da;				/* Drawing area */
     GdkPixmap * pixmap;				/* Pixmap to be drawn on drawing area */
  
@@ -82,6 +84,7 @@ typedef struct {
     GList *cpu_names;
   int cpu_amount;
   char *foreground_color_string;
+  char *background_color_string;
   Plugin *p;
 } CPUPlugin;
 
@@ -106,7 +109,7 @@ static void redraw_pixmap(CPUPlugin * c)
     return;
 
     /* Erase pixmap. */
-    gdk_draw_rectangle(c->pixmap, c->da->style->black_gc, TRUE, 0, 0, c->pixmap_width, c->pixmap_height);
+    gdk_draw_rectangle(c->pixmap, c->background_gc, TRUE, 0, 0, c->pixmap_width, c->pixmap_height);
 
     /* Recompute pixmap. */
     unsigned int i;
@@ -342,13 +345,21 @@ static void set_plot_color(CPUPlugin * c) {
   Plugin * p = c->p;
   if (c->graphics_context != NULL)
     g_object_unref(c->graphics_context);
-  
+  if (c->background_gc != NULL)
+    g_object_unref(c->background_gc);
+
   c->graphics_context = gdk_gc_new(p->panel->topgwin->window);
+  c->background_gc = gdk_gc_new(p->panel->topgwin->window);
   gdk_color_parse(c->foreground_color_string,  &c->foreground_color);
+  gdk_color_parse(c->background_color_string,  &c->background_color);
   gdk_colormap_alloc_color
-    (gdk_drawable_get_colormap(p->panel->topgwin->window), 
+    (gdk_drawable_get_colormap(p->panel->topgwin->window),
      &c->foreground_color, FALSE, TRUE);
+  gdk_colormap_alloc_color
+    (gdk_drawable_get_colormap(p->panel->topgwin->window),
+     &c->background_color, FALSE, TRUE);
   gdk_gc_set_foreground(c->graphics_context, &c->foreground_color);
+  gdk_gc_set_foreground(c->background_gc, &c->background_color);
   redraw_pixmap(c);
 }
 
@@ -382,6 +393,8 @@ static int cpu_constructor(Plugin * p, char ** fp)
             c->cpu_num = atoi(s.t[1]);
           else if (g_ascii_strcasecmp(s.t[0], "Color") == 0)
             c->foreground_color_string = g_strdup(s.t[1]); 
+          else if (g_ascii_strcasecmp(s.t[0], "Background") == 0)
+            c->background_color_string = g_strdup(s.t[1]);
           else if (g_ascii_strcasecmp(s.t[0], "Action") == 0) {
             g_free(c->action);
             c->action = g_strdup(s.t[1]);
@@ -400,6 +413,8 @@ static int cpu_constructor(Plugin * p, char ** fp)
 
     if (c->foreground_color_string == NULL)
       c->foreground_color_string = g_strdup("green");
+    if (c->background_color_string == NULL)
+      c->background_color_string = g_strdup("#D13726");
 
     /* Allocate top level widget and set into Plugin widget pointer. */
     p->pwid = gtk_event_box_new();
@@ -494,6 +509,7 @@ static void cpu_configure(Plugin * p, GtkWindow * parent)
        (GSourceFunc) cpu_apply_configuration, (gpointer) p,
        _("Action on click"), &c->action, CONF_TYPE_STR,
        _("Color"), &c->foreground_color_string, CONF_TYPE_STR,
+       _("Background"), &c->background_color_string, CONF_TYPE_STR,
        _("Width"), &c->widget_width, CONF_TYPE_INT,
        NULL);
 
@@ -548,6 +564,7 @@ static void cpu_save_configuration(Plugin * p, FILE * fp)
     lxpanel_put_int(fp, "CPUNum", c->cpu_num);
     lxpanel_put_str(fp, "Action", c->action);
     lxpanel_put_str(fp, "Color", c->foreground_color_string);
+    lxpanel_put_str(fp, "Background", c->background_color_string);
     lxpanel_put_int(fp, "WidgetWidth", c->widget_width);
 }
 
