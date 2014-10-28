@@ -25,11 +25,16 @@
    for and memory usage or swap usage. by dan@danamlund.dk */
 /* v. 1.3: Added setting to control the width of the widget. */
 
-/* v. 1.4: added better makefile. */
+/* v. 1.4: Added better makefile. */
+
+/* v. 1.5: Enable modification of the background color via the settings dialog. */
+
 /* 
 sudo apt-get install build-essential lxde
 sudo apt-get install libglib2.0-dev libmenu-cache1-dev libgtk2.0-dev
  */
+
+#define VERSION "1.5"
 
 #include <string.h>
 #include <sys/time.h>
@@ -414,7 +419,7 @@ static int cpu_constructor(Plugin * p, char ** fp)
     if (c->foreground_color_string == NULL)
       c->foreground_color_string = g_strdup("green");
     if (c->background_color_string == NULL)
-      c->background_color_string = g_strdup("#D13726");
+      c->background_color_string = g_strdup("#000000");
 
     /* Allocate top level widget and set into Plugin widget pointer. */
     p->pwid = gtk_event_box_new();
@@ -581,7 +586,7 @@ PluginClass cpuda_plugin_class = {
 
     type : "cpuda",
     name : N_("CPU Usage Monitor (da)"),
-    version: "1.2",
+    version: VERSION,
     description : N_("Display CPU usage"),
 
     constructor : cpu_constructor,

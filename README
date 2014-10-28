@@ -73,10 +73,14 @@ AUTHOR INFORMATION
 Author: Dan Amlund Thomsen
 Email: dan@danamlund.dk
 Website: http://danamlund.dk
-
+Github: https://github.com/danamlund/cpu-monitor-extension-lxpanel-plugin
 
 CHANGELOG
 =========
+
+1.5 (2014-10-28)
+  Enable modification of the background color via the settings dialog.
+  (pull request by https://github.com/Winterbraid)
 
 1.4 (2014-04-26)
   Improved Makefile. It should now compile and install on more systems

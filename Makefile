@@ -1,4 +1,4 @@
-VERSION=1.4
+VERSION=1.5
 NAME=cpu-monitor-extension-lxpanel-plugin
 INPUT=cpuda.c
 OUTPUT=cpuda.so
